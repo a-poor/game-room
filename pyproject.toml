@@ -1,6 +1,6 @@
 [project]
 name = "game-room"
-version = "0.1.1"
+version = "0.2.0"
 description = "PettingZoo environments for tabletop games"
 readme = "README.md"
 license = "MIT"

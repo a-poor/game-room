@@ -9,20 +9,18 @@ A collection of PettingZoo environments for a few different games.
 
 ## Installation
 
-Requires Python 3.14+. Install from [PyPI](https://pypi.org/project/game-room/)
-with pip:
+Requires Python 3.14+. Add the package to your project with
+[uv](https://docs.astral.sh/uv/):
 
 ```sh
-python -m pip install game-room
+uv add game-room
 ```
 
-Or add it to a [uv](https://docs.astral.sh/uv/) project with `uv add game-room`.
-To install directly from a checkout, use `python -m pip install .`.
+The package is available on [PyPI](https://pypi.org/project/game-room/).
 
 ## Getting Started
 
-Save the following as `play.py`, then run `python play.py` (or
-`uv run python play.py` in a uv project) to simulate a
+Save the following as `play.py`, then run `uv run python play.py` to simulate a
 three-player Flip 7 game with random legal actions and print the final scores:
 
 ```python
@@ -69,7 +67,7 @@ See [rules and observation reference](docs/rules-flip7.md) for rule conventions,
 card IDs, and the public observation layout.
 
 The `_v0` suffix identifies version 0 of the environment's rules and interface.
-It is independent of the package version (`0.1.1`). Changes that invalidate
+It is independent of the package version (`0.2.0`). Changes that invalidate
 existing policies or experiment comparisons should introduce a new environment
 version, such as `flip7_v1`, rather than silently replacing `flip7_v0`.
 
