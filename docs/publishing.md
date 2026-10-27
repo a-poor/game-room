@@ -1,8 +1,44 @@
 # Publishing game-room
 
-The initial distribution name is `game-room`, the Python import is `game_room`,
-and the first planned version is `0.1.0`. Python 3.14+ is currently required.
+The distribution name is `game-room`, the Python import is `game_room`,
+and version `0.1.0` is published on [PyPI](https://pypi.org/project/game-room/0.1.0/).
+Python 3.14+ is currently required. The commands below show the initial release;
+substitute the new version when preparing subsequent releases.
 The package uses the MIT license and uv's build backend.
+
+## GitHub Actions releases
+
+The `Tests` workflow runs lint, formatting, tests, and package builds on Python
+3.14 across Linux, macOS, and Windows for pushes to `main` and pull requests.
+It can also be run manually, and is reused by the publishing workflow.
+
+The `Publish` workflow runs when a GitHub release is published. It waits for
+the tests, verifies the release tag matches `v` plus `project.version`, builds
+and checks the distributions, tests an installed wheel, and uploads to PyPI
+using Trusted Publishing. No long-lived API token is needed.
+
+Before the first automated release:
+
+1. Push `.github/workflows/test.yml` and `.github/workflows/publish.yml` to GitHub.
+2. Create the `pypi` environment in the repository's Settings > Environments.
+3. In [PyPI publishing settings](https://pypi.org/manage/project/game-room/settings/publishing/),
+   add a GitHub Trusted Publisher with these exact values:
+
+   | Field | Value |
+   | --- | --- |
+   | Owner | `a-poor` |
+   | Repository | `game-room` |
+   | Workflow filename | `publish.yml` |
+   | Environment | `pypi` |
+
+For the next release, bump `project.version` (for example, to `0.1.1`), run
+`uv lock`, commit and push the changes, then publish a GitHub release tagged
+`v0.1.1` at that commit. Draft releases do not upload packages. Published
+prereleases also upload to PyPI; use an appropriate PEP 440 prerelease version
+in the package metadata. Do not release `v0.1.0` through this workflow: that
+version is already on PyPI and its files cannot be replaced.
+
+The manual commands below remain available for local verification and releases.
 
 ## Validate and build
 
@@ -35,9 +71,8 @@ environment's site-packages.
    service. A missing project page does not guarantee the name can be registered.
 3. Configure authentication locally. For manual uploads, use a registry API token
    through `UV_PUBLISH_TOKEN` or uv's credential prompt. Never commit tokens.
-4. When a repository is hosted, add its actual URL to `[project.urls]` and configure
-   a Trusted Publisher if you want releases through CI. No remote repository or
-   publisher is configured by this checkout's initial packaging setup.
+4. For CI publishing, configure the Trusted Publisher described above. Repository
+   URLs are already recorded in `[project.urls]`.
 
 ## Test release
 
@@ -67,8 +102,7 @@ uv publish dist/game_room-0.1.0.tar.gz dist/game_room-0.1.0-py3-none-any.whl
 
 PyPI release files cannot be overwritten. For subsequent releases, update
 `project.version`, refresh `uv.lock`, rebuild, and publish only the intended
-version's artifacts. Update these versioned commands accordingly. After the
-first upload succeeds, remove the README's pre-release installation notice.
+version's artifacts. Update these versioned commands accordingly.
 
 References: [uv packaging guide](https://docs.astral.sh/uv/guides/package/),
 [Python packaging tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/).

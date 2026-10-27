@@ -1,10 +1,15 @@
 # game-room
 
+[![Tests](https://github.com/a-poor/game-room/actions/workflows/test.yml/badge.svg)](https://github.com/a-poor/game-room/actions/workflows/test.yml)
+[![PyPI](https://img.shields.io/pypi/v/game-room)](https://pypi.org/project/game-room/)
+[![Python](https://img.shields.io/pypi/pyversions/game-room)](https://pypi.org/project/game-room/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A collection of PettingZoo environments for a few different games.
 
 ## Installation
 
-Requires Python 3.14+. Once the first release is published to PyPI, install it
+Requires Python 3.14+. Install from [PyPI](https://pypi.org/project/game-room/)
 with pip:
 
 ```sh
@@ -12,8 +17,7 @@ python -m pip install game-room
 ```
 
 Or add it to a [uv](https://docs.astral.sh/uv/) project with `uv add game-room`.
-The first release is being prepared; until it is published, install from this
-repository with `python -m pip install .`.
+To install directly from a checkout, use `python -m pip install .`.
 
 ## Getting Started
 

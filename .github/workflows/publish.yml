@@ -1,0 +1,67 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    uses: ./.github/workflows/test.yml
+
+  publish:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: pypi
+      url: https://pypi.org/project/game-room/
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.13.6"
+          python-version: "3.14"
+      - name: Check release tag matches package version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          uv run --no-project python - <<'PY'
+          import os
+          import tomllib
+          from pathlib import Path
+
+          version = tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"]
+          expected = f"v{version}"
+          if os.environ["RELEASE_TAG"] != expected:
+              raise SystemExit(f"Release tag must be {expected}")
+          PY
+      - run: uv build --no-sources
+      - run: uvx --from twine twine check --strict dist/*
+      - name: Smoke test installed wheel
+        run: |
+          uv venv /tmp/game-room-release
+          uv pip install --python /tmp/game-room-release/bin/python dist/*.whl
+          cd /tmp
+          /tmp/game-room-release/bin/python - <<'PY'
+          import game_room
+          from game_room import flip7_v0
+
+          assert "site-packages" in game_room.__file__
+          env = flip7_v0.env(max_rounds=10)
+          env.reset(seed=42)
+          for agent in env.agent_iter():
+              observation, reward, terminated, truncated, info = env.last()
+              action = None if terminated or truncated else env.action_space(agent).sample(observation["action_mask"])
+              env.step(action)
+          env.close()
+          PY
+      - name: Publish to PyPI
+        run: uv publish --trusted-publishing always --publish-url https://upload.pypi.org/legacy/ dist/*
