@@ -73,6 +73,30 @@ It is independent of the package version (`0.1.1`). Changes that invalidate
 existing policies or experiment comparisons should introduce a new environment
 version, such as `flip7_v1`, rather than silently replacing `flip7_v0`.
 
+## Monopoly Deal
+
+`game_room.monopoly_deal_v0` implements the 106-card game for 2–5 players with
+private hands, banking, property sets and wildcards, all action cards, player-chosen
+payments, and Just Say No counter-response chains. It uses the same AEC loop
+shown above; replace the import and environment construction with:
+
+```python
+from game_room import monopoly_deal_v0
+
+env = monopoly_deal_v0.env(num_players=3, render_mode="ansi")
+```
+
+Always sample from the action mask. Playing a card may require several decisions
+to select a color, group, opponent, payment, or response. Rewards are +1 for the
+winner and −1 for the other players; intermediate rewards are zero. The first
+player with three complete sets of different colors on their own turn wins.
+Episodes truncate after 10,000 decisions by default; set `max_steps=None` to
+disable this limit.
+
+See the [rules, action and observation reference](docs/rules-monopoly-deal.md)
+for the supplied 2008 rules, explicit conventions, physical card IDs, and the
+hidden-information observation layout.
+
 ## Development
 
 From a checkout, install the package and development tools:
@@ -92,8 +116,9 @@ uv run ruff check src tests
 uv run ruff format --check src tests
 ```
 
-Tests include PettingZoo API and seed checks, controlled special-card scenarios,
-and full randomized games checking card conservation and cumulative rewards.
+Tests include PettingZoo API and seed checks for both environments, controlled
+special-card scenarios, hidden-information checks, and randomized games checking
+card conservation and cumulative rewards.
 
 See [publishing instructions](docs/publishing.md) for building and releasing
 the package. The implementation is distributed under the [MIT license](LICENSE).
