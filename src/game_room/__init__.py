@@ -1,2 +1,1 @@
-def hello() -> str:
-    return "Hello from game-room!"
+"""Tabletop games exposed as PettingZoo environments."""
