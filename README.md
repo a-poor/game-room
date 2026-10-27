@@ -120,6 +120,29 @@ The environment uses the rulebook's variable board and combined trade/build
 phase. See the [rules, board geometry and API reference](docs/rules-catan.md)
 for action IDs, the observation layout, and the sequential trading protocol.
 
+## Sell Me a Sasquatch
+
+`game_room.sasquatch_v0` implements the supplied 120-card game for 2–6 players.
+It includes hidden offers, all five Thingamabobs, Nasty thefts and cascading
+sets, Creature scoring, changing Buyers, and the two-player accept/reverse mode.
+
+```python
+from game_room import sasquatch_v0
+
+env = sasquatch_v0.env(num_players=3, render_mode="ansi")
+```
+
+Use the same masked AEC loop shown above. Hands and unknown facedown deal cards
+stay private; contributors can see their own cards. Wins are checked after all
+sets resolve and hands refill. The unique leader must have four points with
+3–4 players, or five points with 2 or 5–6 players; ties continue. Rewards are +1
+for the winner and −1 for opponents. The default limit is 10,000 decisions;
+`max_steps=None` disables it.
+
+See the [supplied rules](docs/rules-sasquatch.md) and
+[environment reference](docs/sasquatch-v0.md) for the action and observation
+layout, sealed offers, Thingamabob opportunities, and set-resolution conventions.
+
 ## Development
 
 From a checkout, install the package and development tools:
