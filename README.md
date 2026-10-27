@@ -141,6 +141,50 @@ See the [supplied rules](docs/rules-sasquatch.md) and
 [environment reference](docs/sasquatch-v0.md) for the action and observation
 layout, sealed offers, Thingamabob opportunities, and set-resolution conventions.
 
+## No Thanks!
+
+`game_room.no_thanks_v0` implements the base game for 3–7 players, with private
+chip counts, nine unseen removed cards, consecutive-run scoring, and shared wins.
+
+```python
+from game_room import no_thanks_v0
+
+env = no_thanks_v0.env(num_players=3, render_mode="ansi")
+```
+
+Actions are `0` (take the card and its chips) and `1` (pay a chip to pass).
+Taking a card leaves the same player to decide on the next card. Use the masked
+AEC loop above; a player without chips must take. Lowest final penalty score
+wins. Terminal rewards are +1 for each winner and −1 for other players.
+
+See the [rules and API reference](docs/rules-no-thanks.md) for observations,
+scoring, and the AMIGO base-game rules. The special-card expansion is excluded.
+
+## Kingdomino
+
+`game_room.kingdomino_v0` implements the 2017 base game for 2–4 players, including
+tile drafting, rotating turn order, two kings per player in two-player games,
+5×5 placement constraints, territory scoring, and both tie-breakers.
+
+```python
+from game_room import kingdomino_v0
+
+env = kingdomino_v0.env(num_players=4, render_mode="ansi")
+```
+
+Use the masked AEC loop above. Placement and choosing the next domino are
+separate decisions. The board uses a 9×9 canvas so the castle can occupy any
+position within the final 5×5 kingdom. A domino can be discarded only when no
+legal placement exists. Rewards are +1 for each winner and −1 for other players.
+
+Both new environments support `ansi` and `human` rendering and an optional
+`max_steps` limit (default 10,000; `None` disables it). Intermediate and truncation
+rewards are zero. Final scores and winners are available in terminal `info`.
+
+See the [rules, tile inventory sources, and API reference](docs/rules-kingdomino.md)
+for action encoding, observations, and the pinned three-player setup. Optional
+variants and expansions are excluded.
+
 ## Development
 
 From a checkout, install the package and development tools:
