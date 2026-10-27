@@ -97,6 +97,29 @@ See the [rules, action and observation reference](docs/rules-monopoly-deal.md)
 for the supplied 2008 rules, explicit conventions, physical card IDs, and the
 hidden-information observation layout.
 
+## Catan
+
+`game_room.catan_v0` implements the base game for 3–4 players on a randomized
+19-hex board. It includes snake-order setup, resource production and shortages,
+building, harbor trades, negotiated player trades with counteroffers, the robber,
+all development cards, Longest Road and Largest Army.
+
+```python
+from game_room import catan_v0
+
+env = catan_v0.env(num_players=4, render_mode="ansi")
+```
+
+Use the same masked AEC loop shown above. Resource hands and unplayed development
+card types are private; public board state and hand sizes are observable. A win
+requires at least 10 points on the player's own turn, awarding +1 to the winner
+and −1 to opponents. Episodes truncate after 20,000 decisions by default;
+`max_steps=None` removes this limit.
+
+The environment uses the rulebook's variable board and combined trade/build
+phase. See the [rules, board geometry and API reference](docs/rules-catan.md)
+for action IDs, the observation layout, and the sequential trading protocol.
+
 ## Development
 
 From a checkout, install the package and development tools:
@@ -116,9 +139,9 @@ uv run ruff check src tests
 uv run ruff format --check src tests
 ```
 
-Tests include PettingZoo API and seed checks for both environments, controlled
-special-card scenarios, hidden-information checks, and randomized games checking
-card conservation and cumulative rewards.
+Tests include PettingZoo API and seed checks for every environment, controlled
+rule scenarios, hidden-information checks, and complete games checking resource
+and card conservation and cumulative rewards.
 
 See [publishing instructions](docs/publishing.md) for building and releasing
 the package. The implementation is distributed under the [MIT license](LICENSE).
