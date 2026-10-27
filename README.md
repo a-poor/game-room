@@ -69,7 +69,7 @@ See [rules and observation reference](docs/rules-flip7.md) for rule conventions,
 card IDs, and the public observation layout.
 
 The `_v0` suffix identifies version 0 of the environment's rules and interface.
-It is independent of the package version (`0.1.0`). Changes that invalidate
+It is independent of the package version (`0.1.1`). Changes that invalidate
 existing policies or experiment comparisons should introduce a new environment
 version, such as `flip7_v1`, rather than silently replacing `flip7_v0`.
 
