@@ -7,6 +7,17 @@
 
 A collection of PettingZoo environments for a few different games.
 
+Supported games:
+
+- [Flip 7](#flip-7)
+- [Monopoly Deal](#monopoly-deal)
+- [Catan](#catan)
+- [Sell Me a Sasquatch](#sell-me-a-sasquatch)
+- [No Thanks!](#no-thanks)
+- [Kingdomino](#kingdomino)
+- [Harmonies](#harmonies)
+- [Ticket to Ride](#ticket-to-ride)
+
 ## Installation
 
 Requires Python 3.14+. Add the package to your project with
@@ -67,7 +78,7 @@ See [rules and observation reference](docs/rules-flip7.md) for rule conventions,
 card IDs, and the public observation layout.
 
 The `_v0` suffix identifies version 0 of the environment's rules and interface.
-It is independent of the package version (`0.2.0`). Changes that invalidate
+It is independent of the package version (`0.3.0`). Changes that invalidate
 existing policies or experiment comparisons should introduce a new environment
 version, such as `flip7_v1`, rather than silently replacing `flip7_v0`.
 
@@ -177,13 +188,73 @@ separate decisions. The board uses a 9×9 canvas so the castle can occupy any
 position within the final 5×5 kingdom. A domino can be discarded only when no
 legal placement exists. Rewards are +1 for each winner and −1 for other players.
 
-Both new environments support `ansi` and `human` rendering and an optional
+No Thanks! and Kingdomino support `ansi` and `human` rendering and an optional
 `max_steps` limit (default 10,000; `None` disables it). Intermediate and truncation
 rewards are zero. Final scores and winners are available in terminal `info`.
 
 See the [rules, tile inventory sources, and API reference](docs/rules-kingdomino.md)
 for action encoding, observations, and the pinned three-player setup. Optional
 variants and expansions are excluded.
+
+## Harmonies
+
+`game_room.harmonies_v0` implements the base game for 1–4 players, with all 32
+animal cards, both board sides, solo play, and the ten optional Nature's Spirits.
+It supports token stacking, rotated habitats, permanent animal placements,
+interleaved turn actions, landscape scoring, and equal-turn game endings.
+
+```python
+from game_room import harmonies_v0
+
+env = harmonies_v0.env(
+    num_players=2, board_side="A", nature_spirits=False, render_mode="ansi"
+)
+```
+
+Use the masked AEC loop above. Taking tokens, placing each token, drafting an
+animal, settling a cube, and ending the turn are separate decisions. Multiplayer
+terminal rewards are +1 for winners and −1 for other players. In solo mode,
+the terminal reward is the final score; `info["suns"]` reports the solo rating.
+
+See the [rules, component sources, and API reference](docs/rules-harmonies.md)
+for habitat patterns, scoring, coordinates, and observation details.
+
+## Ticket to Ride
+
+`game_room.ticket_to_ride_v0` implements the **2025 North America base game**
+for 2–5 players: 100 routes, 33 destination tickets, private hands and tickets,
+train-card drafting, locomotive payments, double-route restrictions, ticket
+selection and returns, the final round, and the longest continuous path bonus.
+
+```python
+from game_room import ticket_to_ride_v0
+
+env = ticket_to_ride_v0.env(num_players=4, render_mode="ansi")
+```
+
+Use the masked AEC loop above. Opening setup offers four tickets and requires
+keeping at least two. Claims separate route selection from payment; later ticket
+draws allow the player to choose both the kept subset and rejected-card order.
+Terminal rewards are +1 for winners and −1 for other players.
+
+Harmonies and Ticket to Ride support `ansi` and `human` rendering, seeded resets,
+and `max_steps` (default 10,000; `None` disables the limit). Intermediate and
+truncation rewards are zero. Final scores and winners are in terminal `info`.
+
+See the [rules, action and observation reference](docs/rules-ticket-to-ride.md)
+for the pinned edition, component IDs, hidden information, and conventions for
+exhausted card supplies.
+
+## Reporting issues
+
+If you run into problems, notice a bug, or find that an environment doesn't
+follow the game's rules, please [open an issue](https://github.com/a-poor/game-room/issues).
+Reports and rule corrections help make these environments more reliable.
+
+When possible, include the environment name, package version, expected and
+actual behavior, and a small example or seed and action sequence that reproduces
+the problem. For rules discrepancies, a rulebook link or page reference is
+especially helpful. You don't need a complete reproduction to report a concern.
 
 ## Development
 
