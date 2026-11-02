@@ -17,6 +17,7 @@ Supported games:
 - [Kingdomino](#kingdomino)
 - [Harmonies](#harmonies)
 - [Ticket to Ride](#ticket-to-ride)
+- [American Mahjong](#american-mahjong)
 
 ## Installation
 
@@ -244,6 +245,31 @@ truncation rewards are zero. Final scores and winners are in terminal `info`.
 See the [rules, action and observation reference](docs/rules-ticket-to-ride.md)
 for the pinned edition, component IDs, hidden information, and conventions for
 exhausted card supplies.
+
+## American Mahjong
+
+`game_room.mahjong_v0` implements four-player American Mahjong with the
+**2026 NMJL card** as its default. It includes Charleston and courtesy passes,
+blind passing, private hands, discard claims, pungs through sextets, joker
+exchanges, concealed hands, public dead-hand challenges, and point payments.
+
+```python
+from game_room import mahjong_v0
+from game_room.mahjong_cards import NMJL_2026
+
+env = mahjong_v0.env(card=NMJL_2026, render_mode="ansi")
+```
+
+Use the masked AEC loop above. Each episode plays one deal. Rewards are net
+point payments, including self-pick and jokerless bonuses; wall games and
+truncations pay zero. `max_steps` defaults to 10,000; `None` disables the limit.
+The environment supports seeded resets and `ansi`/`human` rendering.
+
+Pass a custom `Card` to use different hands. The exported `NMJL_2026` contains
+1,077 concrete suit/rank patterns, with values and exposed/concealed rules.
+Its edition stays fixed regardless of the current date. See the
+[rules, card configuration and API reference](docs/rules-mahjong.md) for sources,
+custom card examples, action encoding, observations, and digital conventions.
 
 ## Reporting issues
 
